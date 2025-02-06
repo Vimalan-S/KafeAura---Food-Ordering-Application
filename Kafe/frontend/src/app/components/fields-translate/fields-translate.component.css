@@ -1,0 +1,22 @@
+/* Make inputs occupy full width of their parent cells */
+.table td {
+    position: relative;
+    padding: 0; /* Remove padding for proper alignment */
+  }
+  
+  .table td input {
+    width: 100%;
+    height: 100%; /* Ensure the input also matches the height of the cell */
+    border: none; /* Optional: Remove the border when not editing */
+    box-sizing: border-box;
+    padding: 8px; /* Add padding for better usability */
+  }
+  
+  /* Add focus effect for inputs */
+  .table td input:focus {
+    outline: 2px solid #007bff; /* Highlight input when focused */
+  }
+  
+  header .btn {
+    margin-right: 6px; /* Space between buttons */
+  }

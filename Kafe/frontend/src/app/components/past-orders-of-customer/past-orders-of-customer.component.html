@@ -1,0 +1,95 @@
+<div class="d-flex flex-column min-vh-100">
+  <!-- Header Section -->
+  <header
+    class="d-flex align-items-center justify-content-between py-3 px-3 text-white"
+    style="background-color: #2a295c; font-size: 1.5rem; font-weight: bold; cursor: pointer;"
+    [routerLink]="'/customer/home'">
+     <!-- Left-Aligned Logo and Title -->
+     <div class="d-flex align-items-center justify-content-start">
+      <!-- Logo Image -->
+      <img src="https://static.vecteezy.com/system/resources/thumbnails/023/628/609/small_2x/coffee-shop-logo-design-png.png" 
+           alt="Coffee Shop Logo" style="height: 40px; margin-right: 10px;" />
+      
+      <!-- Header Title -->
+      <div>{{ 'kWelcomeToOurPlatform' | translate }}</div>
+    </div>
+    
+    <!-- Right-Side Buttons -->
+    <div class="d-flex align-items-center">
+      <!-- Language Selector -->
+      <div class="language-selector d-flex align-items-center">
+        <!-- <label for="language" class="me-2 mb-0 text-white">{{ 'kChooseLanguage' | translate }}</label> -->
+        <select id="language" [(ngModel)]="selectedLanguage" (change)="changeLanguage($event)" class="form-select w-auto">
+          <option value="en">{{ 'kEnglish' | translate }}</option>
+          <option value="tam">{{ 'kTamil' | translate }}</option>
+        </select>
+      </div>
+    </div>
+  </header>
+  
+  <div class="container flex-grow-1 mt-4">
+      <h2>{{ 'kPastOrders' | translate }}</h2>
+      <table class="table table-bordered table-striped">
+        <thead class="table-dark text-center"> 
+          <tr>
+            <th>{{ 'kOrderID' | translate }} </th>
+            <th>{{ 'kCustomerID' | translate }}</th>
+            <th>{{ 'kFoods' | translate }}</th>
+            <th>{{ 'kTotalCost' | translate }}</th>
+            <th>{{ 'kPickupTime' | translate }}</th>
+            <th>{{ 'kDay' | translate }}</th>
+            <th>{{ 'kDeliveryType' | translate }}</th>
+            <th>{{ 'kStatus' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let order of orders">
+            <td>{{ order.id }}</td>
+            <td>{{ order.customerId }}</td>
+            <td>
+              <ul>
+                <li *ngFor="let foodId of order.foods">{{ 'k' + foodMap[foodId].replaceAll(" ", "") | translate }}</li>
+              </ul>
+            </td>
+            <td>{{ order.totalPrice }}</td>
+            <td>{{ order.pickupTime }}</td>
+            <td>{{ dayMap[order.day] | translate }}</td>
+            <td>{{ 'k' + order.deliveryType | translate }}</td>
+            <td>{{ 'k' + order.status.replace(" ", "") | translate }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+        <!-- Toast Container -->
+        <div class="toast-container position-fixed end-0 p-3" style="z-index: 1050; top: 70px;">
+          <div
+            *ngIf="toastMessage"
+            class="toast show align-items-center text-bg-{{ toastType }} border-0"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true">
+            <div class="d-flex">
+              <div class="toast-body">
+                {{ toastMessage }}
+              </div>  
+              <button
+                type="button"
+                class="btn-close btn-close-white me-2 m-auto"
+                (click)="closeToast()"
+                aria-label="Close"></button>
+            </div>    
+          </div>  
+        </div>  
+    
+      <!-- Footer Section -->
+      <footer
+        class="text-center py-3 text-white"
+        style="background-color: #2a295c; font-size: 0.9rem;">
+        &copy; {{ currentYear }} {{ 'kYourCompanyName' | translate }}. {{ 'kAllRightsReserved' | translate }}
+      </footer> 
+  </div>
+
+
+
+  

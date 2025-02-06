@@ -1,0 +1,120 @@
+<div class="d-flex flex-column min-vh-100">
+  <!-- Header Section -->
+  <header class="d-flex align-items-center justify-content-between py-3 px-3 text-white" style="background-color: #2a295c; font-size: 1.5rem; font-weight: bold; cursor: pointer;"
+  [routerLink]="'/admin/home'">
+    <!-- Header Title -->
+    <div>{{ 'kWelcomeToOurPlatform' | translate }}</div>
+    
+    <!-- Right-Side Buttons -->
+    <div class="d-flex align-items-center">
+      <!-- Dropdown for Add Dish Category -->
+      <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="addDishDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          Add a New Dish
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="addDishDropdown">
+          <li><a class="dropdown-item" (click)="goToCategory('meals')">Add Meals</a></li>
+          <li><a class="dropdown-item" (click)="goToCategory('snacks')">Add Snacks</a></li>
+          <li><a class="dropdown-item" (click)="goToCategory('beverages')">Add Beverages</a></li>
+          <li><a class="dropdown-item" (click)="goToCategory('desserts')">Add Desserts</a></li>
+        </ul>
+      </div>
+      <button class="btn btn-primary" (click)="goToUpdateMenu()">Update Existing Menu</button>
+      <button class="btn btn-primary" (click)="viewPastOrders()">View Past Orders</button>
+      <button class="btn btn-primary" (click)="goToUploadKnowledgeFile()">Update Knowledge of Chatbot</button>
+      <button class="btn btn-primary" (click)="goToFieldsTranslate()">Update Language Translation</button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container mt-4 flex-grow-1">
+    <form [formGroup]="snackForm" (ngSubmit)="submitForm()" class="mx-auto" style="max-width: 75%;">
+      <h2>Add New Snacks</h2>
+
+      <!-- Dish Name -->
+      <div class="mb-3">
+        <label for="dishName" class="form-label">Dish Name:</label>
+        <input id="dishName" formControlName="dishName" type="text" class="form-control" placeholder="Enter dish name">
+        <div *ngIf="snackForm.get('dishName')?.invalid && snackForm.get('dishName')?.touched" class="text-danger">
+          Dish name is required.
+        </div>
+      </div>
+
+      <!-- Dish Description -->
+      <div class="mb-3">
+        <label for="dishDescription" class="form-label">Dish Description:</label>
+        <input id="dishDescription" formControlName="dishDescription" type="text" class="form-control" placeholder="Enter dish description">
+        <div *ngIf="snackForm.get('dishDescription')?.invalid && snackForm.get('dishDescription')?.touched" class="text-danger">
+          Dish description is required.
+        </div>
+      </div>
+
+      <!-- Preparation Time -->
+      <div class="mb-3">
+        <label for="preparationTime" class="form-label">Preparation Time:</label>
+        <input id="preparationTime" formControlName="preparationTime" type="text" class="form-control" placeholder="Enter preparation time">
+        <div *ngIf="snackForm.get('preparationTime')?.invalid && snackForm.get('preparationTime')?.touched" class="text-danger">
+          Preparation time is required.
+        </div>
+      </div>
+
+      <!-- Price -->
+      <div class="mb-3">
+        <label for="price" class="form-label">Price:</label>
+        <input id="price" formControlName="price" type="text" class="form-control" placeholder="Enter price">
+        <div *ngIf="snackForm.get('price')?.invalid && snackForm.get('price')?.touched" class="text-danger">
+          Price is required.
+        </div>
+      </div>
+
+      <!-- Currently Available -->
+      <div class="mb-3">
+        <label for="currentlyAvailable" class="form-label">Currently Available:</label>
+        <select id="currentlyAvailable" formControlName="currentlyAvailable" class="form-select">
+          <option value="1">Available</option>
+          <option value="0">Not Available</option>
+        </select>
+      </div>
+
+      <!-- Available Slot (Checkboxes) -->
+      <div formArrayName="availableSlot" class="mb-3">
+        <label class="form-label">Available Slot:</label>
+        <div class="d-flex flex-wrap">
+          <div *ngFor="let slot of availableSlots; let i = index" class="form-check me-3 mb-2">
+            <input type="checkbox" [formControlName]="i" [id]="slot" class="form-check-input" />
+            <label [for]="slot" class="form-check-label">{{ slot | titlecase }}</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Images (URL Input) -->
+      <div formArrayName="images" class="mb-3">
+        <label class="form-label">Image URLs:</label>
+        <div *ngFor="let image of images.controls; let i = index" class="d-flex align-items-center mb-2">
+          <input type="text" [formControlName]="i" class="form-control me-2" placeholder="Enter image URL">
+          <button type="button" class="btn btn-outline-primary" (click)="addImageField()">+</button>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary" [disabled]="snackForm.invalid">Submit</button>
+    </form>
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed end-0 p-3" style="z-index: 1050; top: 70px;">
+      <div *ngIf="toastMessage" class="toast show align-items-center text-bg-{{ toastType }} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body">
+            {{ toastMessage }}
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" (click)="closeToast()" aria-label="Close"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Section -->
+  <footer class="text-center py-3 text-white" style="background-color: #2a295c; font-size: 0.9rem;">
+    &copy; {{ currentYear }} {{ 'kYourCompanyName' | translate }}. {{ 'kAllRightsReserved' | translate }}
+  </footer>
+</div>

@@ -1,0 +1,625 @@
+<div class="d-flex flex-column min-vh-100">
+  <header
+    class="d-flex flex-column flex-md-row align-items-center justify-content-between py-3 px-3 text-white"
+    style="background-color: #2a295c"
+  >
+    <!-- Logo and Title - Stack on mobile -->
+    <div class="d-flex align-items-center mb-3 mb-md-0">
+      <img
+        src="https://static.vecteezy.com/system/resources/thumbnails/023/628/609/small_2x/coffee-shop-logo-design-png.png"
+        alt="Coffee Shop Logo"
+        style="height: 40px; margin-right: 10px"
+        class="img-fluid"
+      />
+      <div class="fs-4 fw-bold">{{ "kWelcomeToOurPlatform" | translate }}</div>
+    </div>
+
+    <!-- Right-Side Controls - Stack on mobile -->
+    <div class="d-flex flex-column flex-md-row align-items-center gap-2">
+      <select
+        class="form-select mb-2 mb-md-0"
+        style="min-width: 147px"
+        [(ngModel)]="selectedCategory"
+        (change)="filterByCategory()"
+      >
+        <option value="all">{{ "kAllCategories" | translate }}</option>
+        <option value="meal">{{ "kmeal" | translate }}</option>
+        <option value="snacks">{{ "ksnacks" | translate }}</option>
+        <option value="beverages">{{ "kbeverages" | translate }}</option>
+        <option value="dessert">{{ "kdessert" | translate }}</option>
+      </select>
+
+      <button
+        class="btn btn-primary mb-2 mb-md-0 text-nowrap"
+        (click)="viewPastOrdersOfThisCustomer()"
+      >
+        {{ "kViewPastOrders" | translate }}
+      </button>
+
+      <select
+        class="form-select"
+        style="max-width: 150px"
+        [(ngModel)]="selectedLanguage"
+        (change)="changeLanguage($event)"
+      >
+        <option value="en">{{ "kEnglish" | translate }}</option>
+        <option value="tam">{{ "kTamil" | translate }}</option>
+      </select>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container-fluid flex-grow-1 mt-4 px-4">
+    <!-- Recommended Foods Section -->
+    <div class="recommended-foods-container">
+      <div
+        class="d-flex flex-column flex-md-row align-items-start align-items-md-center"
+      >
+        <h2 class="ms-3 me-2">{{ "kRecommendedFoods" | translate }}</h2>
+        <div class="d-flex align-items-center">
+          <span class="badge bg-danger rounded me-2">{{
+            getDayName(inputObj.day)
+          }}</span>
+          <img
+            [src]="weatherData?.condition?.icon"
+            alt="Weather Icon"
+            class="img-fluid"
+          />
+        </div>
+      </div>
+      <p class="ms-3">{{ "kBasedOnPastOrders" | translate }}</p>
+
+      <div class="scroll-container">
+        <div
+          class="scroll-content"
+          [style.animation-duration]="suggestedFoods.length * 5 + 's'"
+        >
+          <!-- Original set of cards -->
+          <div class="food-card" *ngFor="let food of suggestedFoods">
+            <div class="card h-100" style="width: 18rem">
+              <img
+                [src]="food.images[0]"
+                class="card-img-top"
+                alt="Food Image"
+              />
+              <div class="card-body">
+                <h5 class="card-title">
+                  {{ "k" + food.dishName.replaceAll(" ", "") | translate }}
+                </h5>
+                <p class="card-text">₹{{ food.price }}</p>
+                <button
+                  class="btn btn-primary mt-2"
+                  (click)="openDishDetails(food)"
+                  data-bs-toggle="modal"
+                  data-bs-target="#dishDetailsModal"
+                >
+                  {{ "kViewDetails" | translate }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Duplicated set of cards for seamless scrolling -->
+          <div class="food-card" *ngFor="let food of suggestedFoods">
+            <div class="card h-100" style="width: 18rem">
+              <img
+                [src]="food.images[0]"
+                class="card-img-top"
+                alt="Food Image"
+              />
+              <div class="card-body">
+                <h5 class="card-title">
+                  {{ "k" + food.dishName.replaceAll(" ", "") | translate }}
+                </h5>
+                <p class="card-text">₹{{ food.price }}</p>
+                <button
+                  class="btn btn-primary mt-2"
+                  (click)="openDishDetails(food)"
+                  data-bs-toggle="modal"
+                  data-bs-target="#dishDetailsModal"
+                >
+                  {{ "kViewDetails" | translate }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Your existing content -->
+    <div class="container-fluid mt-4" style="max-width: 1400px">
+      <div class="row">
+        <div *ngFor="let dish of menuItems" class="col-md-3 col-sm-12">
+          <div class="card">
+            <!-- Show the first image by default -->
+            <img [src]="dish.images[0]" class="card-img-top" alt="Dish Image" />
+            <div class="card-body">
+              <h5 class="card-title">
+                {{ "k" + dish.dishName.replaceAll(" ", "") | translate }}
+              </h5>
+              <p class="card-text">
+                <strong>{{ "kPrice" | translate }}</strong> ₹{{ dish.price }}
+                <br />
+                <strong>{{ "kCategory" | translate }}</strong>
+                {{ "k" + dish.dishCategory | translate }}
+              </p>
+
+              <!-- Quantity Control -->
+              <div class="d-flex align-items-center justify-content-between">
+                <button
+                  class="btn btn-sm btn-danger"
+                  (click)="decreaseQuantity(dish)"
+                >
+                  -
+                </button>
+                <span>{{ dish.quantity }}</span>
+                <button
+                  class="btn btn-sm btn-success"
+                  (click)="increaseQuantity(dish)"
+                >
+                  +
+                </button>
+              </div>
+
+              <button
+                class="btn btn-primary mt-2"
+                (click)="openDishDetails(dish)"
+                data-bs-toggle="modal"
+                data-bs-target="#dishDetailsModal"
+              >
+                {{ "kViewDetails" | translate }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal for Dish Details -->
+      <div
+        class="modal fade"
+        id="dishDetailsModal"
+        tabindex="-1"
+        aria-labelledby="dishDetailsModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content" style="padding: 15px">
+            <div class="modal-header">
+              <h5 class="modal-title" id="dishDetailsModalLabel">
+                {{
+                  "k" + selectedDish?.dishName.replaceAll(" ", "") | translate
+                }}
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div
+              class="modal-body"
+              style="padding: 10px; max-height: 800px; overflow-y: auto"
+            >
+              <!-- Image carousel for all images -->
+              <div
+                id="dishImagesCarousel"
+                class="carousel slide"
+                data-bs-ride="carousel"
+                style="position: relative"
+              >
+                <div class="carousel-inner">
+                  <div
+                    *ngFor="let image of selectedDish?.images; let i = index"
+                    class="carousel-item"
+                    [class.active]="i === 0"
+                    style="position: relative"
+                  >
+                    <img [src]="image" class="d-block w-100" alt="Dish Image" />
+
+                    <!-- Show Nutrition Button Positioned Over Image -->
+                    <button
+                      class="btn btn-info"
+                      style="
+                        position: absolute;
+                        bottom: 10px;
+                        right: 10px;
+                        z-index: 10;
+                        width: 150px;
+                      "
+                      (click)="showNutrition()"
+                    >
+                      {{ "kShowNutrition" | translate }}
+                    </button>
+                  </div>
+                </div>
+                <button
+                  class="carousel-control-prev"
+                  type="button"
+                  data-bs-target="#dishImagesCarousel"
+                  data-bs-slide="prev"
+                >
+                  <span
+                    class="carousel-control-prev-icon"
+                    aria-hidden="true"
+                  ></span>
+                  <span class="visually-hidden">Previous</span>
+                </button>
+                <button
+                  class="carousel-control-next"
+                  type="button"
+                  data-bs-target="#dishImagesCarousel"
+                  data-bs-slide="next"
+                >
+                  <span
+                    class="carousel-control-next-icon"
+                    aria-hidden="true"
+                  ></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
+              </div>
+
+              <!-- Dish details (Price and Category on the same line) -->
+              <div class="d-flex justify-content-between">
+                <p>
+                  <strong>{{ "kPrice" | translate }}</strong> ₹{{
+                    selectedDish?.price
+                  }}
+                </p>
+                <p>
+                  <strong>{{ "kCategory" | translate }}</strong>
+                  {{ "k" + selectedDish?.dishCategory | translate }}
+                </p>
+              </div>
+
+              <!-- Description and Preparation Time with reduced vertical gap -->
+              <p class="mt-2">
+                <strong>{{ "kDescription" | translate }}</strong>
+                {{
+                  "k" +
+                    selectedDish?.dishName.replaceAll(" ", "") +
+                    "Description" | translate
+                }}
+              </p>
+              <p>
+                <strong>{{ "kPreparationTime" | translate }}</strong>
+                {{ selectedDish?.preparationTime }} {{ "kMins" | translate }}
+              </p>
+
+              <!-- Quantity Control and Add to Cart Button on the same row -->
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                  <button
+                    class="btn btn-sm btn-danger"
+                    (click)="decreaseQuantity(selectedDish)"
+                  >
+                    -
+                  </button>
+                  <span class="mx-2">{{ selectedDish?.quantity }}</span>
+                  <button
+                    class="btn btn-sm btn-success"
+                    (click)="increaseQuantity(selectedDish)"
+                  >
+                    +
+                  </button>
+                </div>
+
+                <!-- Add to Cart Button on the rightmost side -->
+                <button
+                  class="btn btn-success"
+                  style="width: 150px"
+                  (click)="addToCart(selectedDish)"
+                >
+                  {{ "kAddToCart" | translate }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Robot Icon -->
+      <div
+        class="position-fixed"
+        (click)="toggleChatbot()"
+        style="right: 20px; bottom: 80px"
+      >
+        <img
+          src="assets/chatbot.png"
+          alt="Chatbot Icon"
+          width="60"
+          height="60"
+        />
+      </div>
+
+      <!-- Chatbot Modal -->
+      <div
+        class="chatbot-modal position-fixed bg-light shadow-lg rounded p-3"
+        [class.d-none]="!isChatbotOpen"
+        [style.transform]="
+          isChatbotOpen ? 'translateY(-50px)' : 'translateY(0)'
+        "
+        style="
+          width: 300px;
+          height: 400px;
+          bottom: 20px;
+          right: 20px;
+          transition: transform 0.3s;
+        "
+      >
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5>{{ "kChatbot" | translate }}</h5>
+          <button class="btn-close" (click)="toggleChatbot()"></button>
+        </div>
+
+        <!-- Adjust the height of the chatbot messages area -->
+        <div class="chatbot-messages overflow-auto mb-3" style="height: 250px">
+          <div *ngFor="let message of chatHistory" class="mb-2">
+            <div
+              [class]="
+                message.type === 'user'
+                  ? 'bg-primary text-white p-2 rounded ms-5'
+                  : 'bg-secondary text-white p-2 rounded me-5'
+              "
+            >
+              {{ message.content }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Input box moved up -->
+        <div class="input-group mt-2">
+          <input
+            type="text"
+            class="form-control cursor-pointer"
+            [(ngModel)]="userQuestion"
+            [placeholder]="'kAskQuestion' | translate"
+          />
+          <button
+            class="btn btn-primary"
+            (click)="sendMessage()"
+            [disabled]="!userQuestion.trim()"
+          >
+            {{ "kSend" | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Modal for Cart Details -->
+    <div
+      *ngIf="isCartModalOpen"
+      class="custom-modal-overlay"
+      (click)="closeCartModal()"
+    >
+      <div class="custom-modal-content" style = "max-width: 700px;" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ "kYourCart" | translate }}</h5>
+          <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                style = "z-index: 5000;"
+              ></button>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="closeCartModal()"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>{{ "kDish" | translate }}</th>
+                <th>{{ "kQuantity" | translate }}</th>
+                <th>{{ "kPrice" | translate }}</th>
+                <th>{{ "kTotal" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of cart">
+                <td>
+                  {{ "k" + item.dishName.replaceAll(" ", "") | translate }}
+                </td>
+                <td>
+                  <button
+                    class="btn btn-sm btn-danger"
+                    (click)="decreaseQuantity(item)"
+                    [disabled]="item.quantity <= 1"
+                  >
+                    -
+                  </button>
+                  <span class="mx-2">{{ item.quantity }}</span>
+                  <button
+                    class="btn btn-sm btn-success"
+                    (click)="increaseQuantity(item)"
+                  >
+                    +
+                  </button>
+                </td>
+                <td>₹{{ item.price }}</td>
+                <td>₹{{ item.quantity * item.price }}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="3" class="text-end">
+                  <strong>{{ "kTotalCost" | translate }}</strong>
+                </td>
+                <td>₹{{ calculateTotalCost() }}</td>
+              </tr>
+            </tfoot>
+          </table>
+          <div class="row align-items-center">
+            <!-- Time Selector -->
+            <div class="col-md-6">
+              <label for="time" class="form-label">{{
+                "kChooseDeliveryTime" | translate
+              }}</label>
+              <input
+                id="time"
+                type="time"
+                [formControl]="timeControl"
+                (change)="onTimeChange()"
+                [min]="minTime"
+                class="form-control"
+              />
+              <div
+                *ngIf="timeControl.errors?.['invalidTime']"
+                class="text-danger mt-1"
+              >
+                {{ "kPleaseSelectATimeAfter" | translate }}&nbsp;{{ minTime }}
+              </div>
+            </div>
+
+            <!-- Delivery Type Selector -->
+            <div class="col-md-6">
+              <label for="deliveryType" class="form-label">{{
+                "kChooseDeliveryType" | translate
+              }}</label>
+              <select
+                id="deliveryType"
+                class="form-select"
+                [(ngModel)]="selectedDeliveryType"
+              >
+                <option value="DineIn">{{ "kDineIn" | translate }}</option>
+                <option value="CabinDelivery">
+                  {{ "kCabinDelivery" | translate }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="closeCartModal()"
+          >
+            {{ "kClose" | translate }}
+          </button>
+          <button
+            class="btn btn-primary"
+            [disabled]="timeControl.errors?.['invalidTime']"
+            (click)="proceedToPayment()"
+          >
+            {{ "kProceedToCheckout" | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cart Summary -->
+    <div
+      class="fixed-bottom bg-light py-3 px-4 d-flex justify-content-between align-items-center shadow-sm"
+      *ngIf="cart.length > 0"
+    >
+      <div>
+        <span
+          ><strong>{{ cart.length }}</strong> &nbsp;{{
+            "kItemsAdded" | translate
+          }}</span
+        >
+      </div>
+      <button class="btn btn-success" (click)="openCartModal()">
+        {{ "kViewCart" | translate }}
+      </button>
+    </div>
+
+    <!-- Modal for Nutrition Details -->
+    <!-- Nutrition Pie Chart Modal -->
+    <div
+      *ngIf="isNutritionModalOpen"
+      class="custom-modal-overlay"
+      (click)="closeNutritionModal()"
+    >
+      <div class="custom-modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            {{ "kNutritionalInformation" | translate }}
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="closeNutritionModal()"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div
+            *ngIf="
+              chartOptionsInGrams.series &&
+              chartOptionsInGrams.series.length > 0
+            "
+          >
+            <h6>{{ "kCalories" | translate }} :{{ calories }}&nbsp;cal</h6>
+
+            <!-- Nutrition Pie Chart for Grams (g) -->
+            <div class="col-md-6">
+              <apx-chart
+                [series]="chartOptionsInGrams.series"
+                [chart]="chartOptionsInGrams.chart"
+                [labels]="chartOptionsInGrams.labels"
+                [responsive]="chartOptionsInGrams.responsive"
+                [title]="chartOptionsInGrams.title"
+              ></apx-chart>
+            </div>
+
+            <!-- Nutrition Pie Chart for Milligrams (mg) -->
+            <div class="col-md-6">
+              <apx-chart
+                [series]="chartOptionsInMilligrams.series"
+                [chart]="chartOptionsInMilligrams.chart"
+                [labels]="chartOptionsInMilligrams.labels"
+                [responsive]="chartOptionsInMilligrams.responsive"
+                [title]="chartOptionsInMilligrams.title"
+              ></apx-chart>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="closeNutritionModal()"
+          >
+            {{ "kClose" | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed end-0 p-3" style="z-index: 1050; top: 70px;">
+      <div
+        *ngIf="toastMessage"
+        class="toast show align-items-center text-bg-{{ toastType }} border-0"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div class="d-flex">
+          <div class="toast-body">
+            {{ toastMessage }}
+          </div>
+          <button
+            type="button"
+            class="btn-close btn-close-white me-2 m-auto"
+            (click)="closeToast()"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Section -->
+  <footer
+    class="text-center py-3 text-white"
+    style="background-color: #2a295c; font-size: 0.9rem"
+  >
+    &copy; {{ currentYear }} {{ "kYourCompanyName" | translate }}.
+    {{ "kAllRightsReserved" | translate }}
+  </footer>
+</div>

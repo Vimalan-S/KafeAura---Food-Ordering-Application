@@ -1,0 +1,135 @@
+<div class="d-flex flex-column min-vh-100">
+  <!-- Header Section -->
+  <header class="d-flex align-items-center justify-content-between py-3 px-3 text-white" style="background-color: #2a295c; font-size: 1.5rem; font-weight: bold; cursor: pointer;" [routerLink]="'/admin/home'">
+     <!-- Left-Aligned Logo and Title -->
+     <div class="d-flex align-items-center justify-content-start">
+      <!-- Logo Image -->
+      <img src="https://static.vecteezy.com/system/resources/thumbnails/023/628/609/small_2x/coffee-shop-logo-design-png.png" 
+           alt="Coffee Shop Logo" style="height: 40px; margin-right: 10px;" />
+      
+      <!-- Header Title -->
+      <div>{{ 'kWelcomeToOurPlatform' | translate }}</div>
+    </div>
+    
+    <!-- Right-Side Buttons -->
+    <div class="d-flex align-items-center">
+      <!-- Dropdown for Add Dish Category -->
+      <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="addDishDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          Add a New Dish
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="addDishDropdown">
+          <li><a class="dropdown-item" (click)="goToCategory('meals')">Add Meals</a></li>
+          <li><a class="dropdown-item" (click)="goToCategory('snacks')">Add Snacks</a></li>
+          <li><a class="dropdown-item" (click)="goToCategory('beverages')">Add Beverages</a></li>
+          <li><a class="dropdown-item" (click)="goToCategory('desserts')">Add Desserts</a></li>
+        </ul>
+      </div>
+      <button class="btn btn-primary" (click)="goToUpdateMenu()">Update Existing Menu</button>
+      <button class="btn btn-primary" (click)="viewPastOrders()">View Past Orders</button>
+      <button class="btn btn-primary" (click)="goToUploadKnowledgeFile()">Update Knowledge of Chatbot</button>
+      <button class="btn btn-primary" (click)="goToFieldsTranslate()">Update Language Translation</button>
+    </div>
+  </header>
+  
+  <!-- Main Content -->
+  <div class="container mt-4 flex-grow-1">
+    <h2 class="text-center mb-4">Update Dishes</h2>
+
+    <!-- Dropdown for filtering by category -->
+    <div class="mb-4">
+        <label for="category" class="form-label">Filter by Category:</label>
+        <select id="category" class="form-select" [(ngModel)]="selectedCategory" (change)="filterByCategory()">
+            <option value="">All</option>
+            <option value="snacks">Snacks</option>
+            <option value="meal">Meal</option>
+            <option value="dessert">Dessert</option>
+            <option value="beverages">Beverages</option>
+        </select>
+    </div>
+
+    <!-- Table to display dishes -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover table-striped">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th>Dish ID</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Prep Time</th>
+                    <th>Price</th>
+                    <th>Available</th>
+                    <th>Available Slot</th>
+                    <th>Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let dish of dishes">
+                    <td>{{ dish.dishiId }}</td>
+                    <td><input [(ngModel)]="dish.dishName" class="form-control" /></td>
+                    <td>
+                        <select [(ngModel)]="dish.dishCategory" class="form-select">
+                            <option value="snacks">Snacks</option>
+                            <option value="meal">Meal</option>
+                            <option value="dessert">Dessert</option>
+                            <option value="beverages">Beverages</option>
+                        </select>
+                    </td>
+                    <td><input [(ngModel)]="dish.dishDescription" class="form-control" /></td>
+                    <td><input [(ngModel)]="dish.preparationTime" type="number" class="form-control" /></td>
+                    <td><input [(ngModel)]="dish.price" type="number" class="form-control" /></td>
+                    <td>
+                        <select [(ngModel)]="dish.currentlyAvailable" class="form-select">
+                            <option value="1">Available</option>
+                            <option value="0">Not Available</option>
+                        </select>
+                    </td>
+                    <td>
+                        <!-- Checkboxes for available slots -->
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" [(ngModel)]="dish.availableSlot.morning" /> Morning
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" [(ngModel)]="dish.availableSlot.afternoon" /> Afternoon
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" [(ngModel)]="dish.availableSlot.evening" /> Evening
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" [(ngModel)]="dish.availableSlot.night" /> Night
+                            </label>
+                        </div>
+                    </td>
+                    <td><button class="btn btn-warning btn-sm" (click)="updateDish(dish)">Update</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed end-0 p-3" style="z-index: 1050; top: 70px;">
+      <div *ngIf="toastMessage" class="toast show align-items-center text-bg-{{ toastType }} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body">
+            {{ toastMessage }}
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" (click)="closeToast()" aria-label="Close"></button>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+    <!-- Footer Section -->
+    <footer class="text-center py-3 text-white" style="background-color: #2a295c; font-size: 0.9rem;">
+      &copy; {{ currentYear }} {{ 'kYourCompanyName' | translate }}. {{ 'kAllRightsReserved' | translate }}
+    </footer>
+</div>

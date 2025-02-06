@@ -1,0 +1,89 @@
+<div class="d-flex flex-column min-vh-100">
+  <!-- Header Section -->
+  <header class="d-flex align-items-center justify-content-between py-3 px-3 text-white" style="background-color: #2a295c; font-size: 1.5rem; font-weight: bold; cursor: pointer;" [routerLink]="'/admin/home'">
+     <!-- Left-Aligned Logo and Title -->
+     <div class="d-flex align-items-center justify-content-start">
+      <!-- Logo Image -->
+      <img src="https://static.vecteezy.com/system/resources/thumbnails/023/628/609/small_2x/coffee-shop-logo-design-png.png" 
+           alt="Coffee Shop Logo" style="height: 40px; margin-right: 10px;" />
+      
+      <!-- Header Title -->
+      <div>{{ 'kWelcomeToOurPlatform' | translate }}</div>
+    </div>
+    
+    <!-- Right-Side Buttons -->
+    <div class="d-flex align-items-center">
+      <!-- Dropdown for Add Dish Category -->
+      <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="addDishDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          Add a New Dish
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="addDishDropdown">
+          <li><a class="dropdown-item" (click)="goToCategory('meals')">Add Meals</a></li>
+          <li><a class="dropdown-item" (click)="goToCategory('snacks')">Add Snacks</a></li>
+          <li><a class="dropdown-item" (click)="goToCategory('beverages')">Add Beverages</a></li>
+          <li><a class="dropdown-item" (click)="goToCategory('desserts')">Add Desserts</a></li>
+        </ul>
+      </div>
+      <button class="btn btn-primary" (click)="goToUpdateMenu()">Update Existing Menu</button>
+      <button class="btn btn-primary" (click)="viewPastOrders()">View Past Orders</button>
+      <button class="btn btn-primary" (click)="goToUploadKnowledgeFile()">Update Knowledge of Chatbot</button>
+      <button class="btn btn-primary" (click)="goToFieldsTranslate()">Update Language Translation</button>
+    </div>
+  </header>
+  
+  <!-- Main Content -->
+  <div class="container mt-4 flex-grow-1">
+  <h2 class="text-center mb-4">Past Orders</h2>
+
+  <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+          <thead class="table-dark text-center">
+              <tr>
+                  <th>Order ID</th>
+                  <th>Customer ID</th>
+                  <th>Foods</th>
+                  <th>Total Price</th>
+                  <th>Pickup Time</th>
+                  <th>Day</th>
+                  <th>Delivery Type</th>
+                  <th>Status</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr *ngFor="let order of orders">
+                  <td>{{ order.id }}</td>
+                  <td>{{ order.customerId }}</td>
+                  <td>
+                      <ul class="list-unstyled">
+                          <li *ngFor="let foodId of order.foods">{{ foodMap[foodId] }}</li>
+                      </ul>
+                  </td>
+                  <td>{{ order.totalPrice }}</td>
+                  <td>{{ order.pickupTime }}</td>
+                  <td>{{ dayMap[order.day] }}</td>
+                  <td>{{ order.deliveryType }}</td>
+                  <td>{{ order.status }}</td>
+              </tr>
+          </tbody>
+      </table>
+
+      <!-- Toast Container -->
+      <div class="toast-container position-fixed end-0 p-3" style="z-index: 1050; top: 70px;">
+      <div *ngIf="toastMessage" class="toast show align-items-center text-bg-{{ toastType }} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body">
+            {{ toastMessage }}
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" (click)="closeToast()" aria-label="Close"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer Section -->
+<footer class="text-center py-3 text-white" style="background-color: #2a295c; font-size: 0.9rem;">
+  &copy; {{ currentYear }} {{ 'kYourCompanyName' | translate }}. {{ 'kAllRightsReserved' | translate }}
+</footer>
+</div>

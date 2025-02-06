@@ -1,0 +1,96 @@
+<div class="d-flex flex-column min-vh-100">
+  <!-- Header Section -->
+  <header
+    class="d-flex flex-wrap align-items-center justify-content-between py-3 px-3 text-white"
+    style="background-color: #2a295c; font-size: 1.5rem; font-weight: bold;">
+     <!-- Left-Aligned Logo and Title -->
+     <div class="d-flex align-items-center justify-content-start">
+        <!-- Logo Image -->
+        <img src="https://static.vecteezy.com/system/resources/thumbnails/023/628/609/small_2x/coffee-shop-logo-design-png.png" 
+            alt="Coffee Shop Logo" style="height: 40px; margin-right: 10px;" />
+        
+        <!-- Header Title -->
+        <div>{{ 'kWelcomeToOurPlatform' | translate }}</div>
+      </div>
+
+    <!-- Right-Side Buttons -->
+    <div class="col-12 col-md-6 d-flex justify-content-center justify-content-md-end mt-3 mt-md-0">
+      <!-- Language Selector -->
+      <div class="language-selector d-flex align-items-center">
+        <select
+          id="language"
+          [(ngModel)]="selectedLanguage"
+          (change)="changeLanguage($event)"
+          class="form-select w-auto">
+          <option value="en">{{ 'kEnglish' | translate }}</option>
+          <option value="tam">{{ 'kTamil' | translate }}</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container flex-grow-1 mt-4">
+  
+    <!-- Login Form Section -->
+    <div class="card shadow-lg p-4 text-white mx-auto" style="max-width: 600px; border-radius: 10px; background: url('https://img.freepik.com/free-vector/restaurant-mural-wallpaper_23-2148703851.jpg?semt=ais_hybrid'); background-size: cover; background-position: center; position: relative;">
+      <div class="card-overlay position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0, 0, 0, 0.5); border-radius: 10px; z-index: 1;"></div>
+      <h4 class="card-title mb-4 text-center" style="z-index: 2; position: relative;">
+        {{ 'kLogin' | translate }}
+      </h4>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" style="z-index: 2; position: relative;">
+        <div class="mb-3">
+          <label for="name" class="form-label">{{ 'kName' | translate }}</label>
+          <input id="name" formControlName="name" type="text" class="form-control" [placeholder]="'kEnterName' | translate">
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">{{ 'kPassword' | translate }}</label>
+          <input id="password" formControlName="password" type="password" class="form-control" [placeholder]="'kEnterPassword' | translate">
+        </div>
+
+        <div class="mb-3">
+          <label for="role" class="form-label">{{ 'kRole' | translate }}</label>
+          <select id="role" formControlName="role" class="form-select">
+            <option value="admin">{{ 'kAdmin' | translate }}</option>
+            <option value="customer">{{ 'kCustomer' | translate }}</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100" [disabled]="loginForm.invalid">{{ 'kLogin' | translate }}</button>
+      </form>
+    </div>
+
+    <div class = "d-flex justify-content-center mt-4">
+      <p>New to the Application?</p>&nbsp; <a  [routerLink]="'/register'">Register Now</a>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed end-0 p-3" style="z-index: 1050; top: 70px;">
+      <div
+        *ngIf="toastMessage"
+        class="toast show align-items-center text-bg-{{ toastType }} border-0"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body">
+            {{ toastMessage }}
+          </div>
+          <button
+            type="button"
+            class="btn-close btn-close-white me-2 m-auto"
+            (click)="closeToast()"
+            aria-label="Close"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Section -->
+  <footer
+    class="text-center py-3 text-white"
+    style="background-color: #2a295c; font-size: 0.9rem;">
+    &copy; {{ currentYear }} {{ 'kYourCompanyName' | translate }}. {{ 'kAllRightsReserved' | translate }}
+  </footer>
+</div>

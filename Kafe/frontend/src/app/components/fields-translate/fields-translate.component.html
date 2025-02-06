@@ -1,0 +1,173 @@
+<div class="d-flex flex-column min-vh-100">
+  <!-- Header Section -->
+  <header class="d-flex align-items-center justify-content-between py-3 px-3 text-white" style="background-color: #2a295c; font-size: 1.5rem; font-weight: bold; cursor: pointer;" [routerLink]="'/admin/home'">
+     <!-- Left-Aligned Logo and Title -->
+     <div class="d-flex align-items-center justify-content-start">
+      <!-- Logo Image -->
+      <img src="https://static.vecteezy.com/system/resources/thumbnails/023/628/609/small_2x/coffee-shop-logo-design-png.png" 
+           alt="Coffee Shop Logo" style="height: 40px; margin-right: 10px;" />
+      
+      <!-- Header Title -->
+      <div>{{ 'kWelcomeToOurPlatform' | translate }}</div>
+    </div>
+    
+    <!-- Right-Side Buttons -->
+    <div class="d-flex align-items-center">
+      <!-- Dropdown for Add Dish Category -->
+      <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="addDishDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          Add a New Dish
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="addDishDropdown">
+          <li><a class="dropdown-item" (click)="goToCategory('meals')">Add Meals</a></li>
+          <li><a class="dropdown-item" (click)="goToCategory('snacks')">Add Snacks</a></li>
+          <li><a class="dropdown-item" (click)="goToCategory('beverages')">Add Beverages</a></li>
+          <li><a class="dropdown-item" (click)="goToCategory('desserts')">Add Desserts</a></li>
+        </ul>
+      </div>
+      <button class="btn btn-primary" (click)="goToUpdateMenu()">Update Existing Menu</button>
+      <button class="btn btn-primary" (click)="viewPastOrders()">View Past Orders</button>
+      <button class="btn btn-primary" (click)="goToUploadKnowledgeFile()">Update Knowledge of Chatbot</button>
+      <button class="btn btn-primary" (click)="goToFieldsTranslate()">Update Language Translation</button>
+    </div>
+  </header>
+  
+<!-- Main Content -->
+<div class="container mt-4 flex-grow-1">
+  <h2 class="text-center mb-4">Add K-Value</h2>
+  <form (ngSubmit)="addKValue()" #kValueForm="ngForm" class="p-4 border rounded shadow-sm bg-light">
+      <div class="mb-3">
+          <label for="kValue" class="form-label">KValue:</label>
+          <input
+              type="text"
+              id="kValue"
+              class="form-control"
+              [(ngModel)]="kValue"
+              name="kValue"
+              required
+              placeholder="Enter the K-Value"
+          />
+      </div>
+      <div class="mb-3">
+          <label for="en" class="form-label">English Content:</label>
+          <input
+              type="text"
+              id="en"
+              class="form-control"
+              [(ngModel)]="en"
+              name="en"
+              required
+              placeholder="Enter English Content"
+          />
+      </div>
+      <div class="text-center">
+          <button type="submit" class="btn btn-primary px-5">Add kValue</button>
+      </div>
+  </form>
+</div>
+
+<div class="container mt-3 text-center">
+  <button class="btn btn-success px-4" (click)="generateTranslations()">Generate Translations</button>
+</div>
+
+<div class="container mt-4">
+  <h2 class="text-center mb-4">K-Values Table</h2>
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle table-striped">
+        <thead class="table-dark text-center">
+            <tr>
+                <th>K-Value</th>
+                <th>English</th>
+                <th>Tamil</th>
+                <th class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let row of kValues">
+                <td>
+                    <input
+                        type="text"
+                        class="form-control"
+                        [readonly]="!isEditing[row.kValue]"
+                        [(ngModel)]="row.kValue"
+                    />
+                </td>
+                <td>
+                    <input
+                        type="text"
+                        class="form-control"
+                        [readonly]="!isEditing[row.kValue]"
+                        [(ngModel)]="row.en"
+                    />
+                </td>
+                <td>
+                    <input
+                        type="text"
+                        class="form-control"
+                        [readonly]="!isEditing[row.kValue]"
+                        [(ngModel)]="row.tam"
+                    />
+                </td>
+                <td class="text-center">
+                    <button
+                      class="btn btn-warning btn-sm me-2"
+                      *ngIf="!isEditing[row.kValue]"
+                      (click)="enableEditing(row.kValue)"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      class="btn btn-success btn-sm me-2"
+                      *ngIf="isEditing[row.kValue]"
+                      (click)="saveRow(row)"
+                    >
+                      Save
+                    </button>
+                    <button
+                      class="btn btn-secondary btn-sm me-2"
+                      *ngIf="isEditing[row.kValue]"
+                      (click)="cancelEditing(row.kValue)"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      class="btn btn-danger btn-sm"
+                      (click)="deleteRow(row)"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                  
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+  <!-- Toast Container -->
+  <div class="toast-container position-fixed end-0 p-3" style="z-index: 1050; top: 70px;">
+      <div
+          *ngIf="toastMessage"
+          class="toast show align-items-center text-bg-{{ toastType }} border-0 shadow-sm"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+      >
+          <div class="d-flex">
+              <div class="toast-body">{{ toastMessage }}</div>
+              <button
+                  type="button"
+                  class="btn-close btn-close-white me-2 m-auto"
+                  (click)="closeToast()"
+                  aria-label="Close"
+              ></button>
+          </div>
+      </div>
+  </div>
+</div>
+
+  <!-- Footer Section -->
+<footer class="text-center py-3 text-white" style="background-color: #2a295c; font-size: 0.9rem;">
+  &copy; {{ currentYear }} {{ 'kYourCompanyName' | translate }}. {{ 'kAllRightsReserved' | translate }}
+</footer>
+</div>
