@@ -151,3 +151,5 @@
 2025-01-15 21:17:21 [INFO]: Fetched all Menu items
 2025-01-15 21:17:24 [INFO]: Fetched all Menu items
 2025-01-15 21:17:51 [INFO]: Fetched all Menu items
+2025-02-06 23:34:55 [INFO]: Server running on http://localhost:3000
+2025-02-06 23:35:05 [ERROR]: Error initializing FAISS vector store from database: connect ETIMEDOUT
