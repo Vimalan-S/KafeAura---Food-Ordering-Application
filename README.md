@@ -2,7 +2,7 @@
 
 KAFE AURA is a full-stack food ordering application built with **Angular (Frontend)**, **ExpressJS (Backend)**, and **MySQL (Database)**. The application features two modules: **Admin** and **Customer**, each designed to streamline the food ordering process while incorporating advanced features like **AI-powered chatbots**, **bilingual localization**, and **secure payment integration**.
 
-![Customer Homepage]([screenshots/my-screenshot.png](https://github.com/Vimalan-S/KafeAura---Food-Ordering-Application/blob/main/Kafe/screenshots/Customer%20Homepage.jpg))
+![Customer Homepage](https://github.com/Vimalan-S/KafeAura---Food-Ordering-Application/blob/6b2e6af9efb4844aea28ddcc7c411f78685d54ec/Kafe/screenshots/Customer%20Homepage.jpg)
 
 ---
 
